@@ -1,0 +1,17 @@
+configuration:
+  sql-driver: 'mariadb' # MariaDB, MySQL, PostgreSQL
+  sql-use: false
+  sql-host: 'localhost:3306'
+  sql-database: 'database'
+  sql-user: 'user'
+  sql-password: 'password'
+
+  reload-message: '<green>Плагин перезапущен.'
+
+  vanish-enabled-message: '<green>Вы включили Vanish.'
+  vanish-disabled-message: '<gray>Вы выключили Vanish.'
+
+  vanish-target-enabled-message: '<green>Вы включили Vanish игроку {player}.'
+  vanish-target-disabled-message: '<gray>Вы выключили Vanish игроку {player}.'
+
+  join-message: '<gray>У вас был включен Vanish, вы скрыты от игроков.'
