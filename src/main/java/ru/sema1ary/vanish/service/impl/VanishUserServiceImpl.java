@@ -84,21 +84,19 @@ public class VanishUserServiceImpl implements VanishUserService {
             if(!onlinePlayer.hasPermission("vanish.see")) {
                 onlinePlayer.hidePlayer(plugin, player);
             }
-
-            if(isJoinerEnabled) {
-                Vanish.getPlugin(Joiner.class).getService(JoinerUserService.class).sendFakeQuitMessage(player);
-            }
         });
+
+        if(isJoinerEnabled) {
+            Vanish.getPlugin(Joiner.class).getService(JoinerUserService.class).sendFakeQuitMessage(player);
+        }
     }
 
     @Override
     public void showPlayer(@NonNull Player player) {
-        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
-            onlinePlayer.showPlayer(plugin, player);
+        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.showPlayer(plugin, player));
 
-            if(isJoinerEnabled) {
-                Vanish.getPlugin(Joiner.class).getService(JoinerUserService.class).sendFakeJoinMessage(player);
-            }
-        });
+        if(isJoinerEnabled) {
+            Vanish.getPlugin(Joiner.class).getService(JoinerUserService.class).sendFakeJoinMessage(player);
+        }
     }
 }
