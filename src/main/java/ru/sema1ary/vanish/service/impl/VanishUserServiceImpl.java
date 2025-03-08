@@ -5,19 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import ru.sema1ary.joiner.Joiner;
-import ru.sema1ary.joiner.model.JoinerUser;
-import ru.sema1ary.joiner.service.JoinerMessageService;
 import ru.sema1ary.joiner.service.JoinerUserService;
 import ru.sema1ary.vanish.Vanish;
 import ru.sema1ary.vanish.dao.VanishUserDao;
 import ru.sema1ary.vanish.model.VanishUser;
 import ru.sema1ary.vanish.service.VanishUserService;
-import service.ServiceManager;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 public class VanishUserServiceImpl implements VanishUserService {
