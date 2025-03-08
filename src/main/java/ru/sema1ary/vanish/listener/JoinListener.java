@@ -29,6 +29,8 @@ public class JoinListener implements Listener {
             return;
         }
 
+        event.joinMessage(null);
+
         player.sendMessage(miniMessage.deserialize(configService.get("join-message")));
         userService.hidePlayer(player);
 
