@@ -6,7 +6,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import ormlite.ConnectionSourceUtil;
 import ormlite.DaoFinder;
-import ru.sema1ary.joiner.Joiner;
 import ru.sema1ary.vanish.command.VanishCommand;
 import ru.sema1ary.vanish.listener.JoinListener;
 import ru.sema1ary.vanish.listener.PreJoinListener;
