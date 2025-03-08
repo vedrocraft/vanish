@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import ormlite.ConnectionSourceUtil;
 import ormlite.DaoFinder;
+import ru.sema1ary.joiner.Joiner;
 import ru.sema1ary.vanish.command.VanishCommand;
 import ru.sema1ary.vanish.listener.JoinListener;
 import ru.sema1ary.vanish.listener.PreJoinListener;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
 
 public final class Vanish extends JavaPlugin implements DaoFinder {
     private JdbcPooledConnectionSource connectionSource;
+    private boolean isJoinerEnabled = false;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @Override
@@ -34,9 +36,12 @@ public final class Vanish extends JavaPlugin implements DaoFinder {
 
         initConnectionSource();
 
-        ServiceManager.registerService(VanishUserService.class, new VanishUserServiceImpl(this, getDao(connectionSource,
-                VanishUser.class)));
+        if(getServer().getPluginManager().isPluginEnabled("joiner")) {
+            isJoinerEnabled = true;
+        }
 
+        ServiceManager.registerService(VanishUserService.class, new VanishUserServiceImpl(this, isJoinerEnabled, getDao(connectionSource,
+                VanishUser.class)));
 
         getServer().getPluginManager().registerEvents(new PreJoinListener(ServiceManager.getService(
                 VanishUserService.class)), this);
