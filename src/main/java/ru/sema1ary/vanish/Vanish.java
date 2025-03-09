@@ -16,13 +16,14 @@ import ru.sema1ary.vanish.service.impl.VanishUserServiceImpl;
 import ru.vidoskim.bukkit.service.ConfigService;
 import ru.vidoskim.bukkit.service.impl.ConfigServiceImpl;
 import ru.vidoskim.bukkit.util.LiteCommandUtil;
+import service.ServiceGetter;
 import service.ServiceManager;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class Vanish extends JavaPlugin implements DaoFinder {
+public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter {
     private JdbcPooledConnectionSource connectionSource;
     private boolean isJoinerEnabled = false;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
