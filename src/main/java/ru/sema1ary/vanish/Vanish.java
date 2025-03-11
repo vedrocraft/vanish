@@ -4,8 +4,6 @@ import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
-import ormlite.ConnectionSourceUtil;
-import ormlite.DaoFinder;
 import ru.sema1ary.vanish.command.VanishCommand;
 import ru.sema1ary.vanish.listener.JoinListener;
 import ru.sema1ary.vanish.listener.PreJoinListener;
@@ -13,11 +11,13 @@ import ru.sema1ary.vanish.model.VanishUser;
 import ru.sema1ary.vanish.service.VanishUserService;
 import ru.sema1ary.vanish.service.impl.VanishUserServiceImpl;
 
-import ru.vidoskim.bukkit.service.ConfigService;
-import ru.vidoskim.bukkit.service.impl.ConfigServiceImpl;
-import ru.vidoskim.bukkit.util.LiteCommandUtil;
-import service.ServiceGetter;
-import service.ServiceManager;
+import ru.sema1ary.vedrocraftapi.command.LiteCommandBuilder;
+import ru.sema1ary.vedrocraftapi.ormlite.ConnectionSourceUtil;
+import ru.sema1ary.vedrocraftapi.ormlite.DaoFinder;
+import ru.sema1ary.vedrocraftapi.service.ConfigService;
+import ru.sema1ary.vedrocraftapi.service.ServiceGetter;
+import ru.sema1ary.vedrocraftapi.service.ServiceManager;
+import ru.sema1ary.vedrocraftapi.service.impl.ConfigServiceImpl;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,10 +49,10 @@ public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter
                 ServiceManager.getService(ConfigService.class),
                 ServiceManager.getService(VanishUserService.class)), this);
 
-        new LiteCommandUtil().create("vanish",
-                new VanishCommand(miniMessage, ServiceManager.getService(ConfigService.class),
-                        ServiceManager.getService(VanishUserService.class))
-        );
+        LiteCommandBuilder.builder()
+                .commands(new VanishCommand(miniMessage, ServiceManager.getService(ConfigService.class),
+                        ServiceManager.getService(VanishUserService.class)))
+                .build();
     }
 
     @Override
@@ -63,8 +63,7 @@ public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter
     @SneakyThrows
     private void initConnectionSource() {
         if(ServiceManager.getService(ConfigService.class).get("sql-use")) {
-            connectionSource = ConnectionSourceUtil.connectSQLDatabaseWithoutSSL(
-                    ServiceManager.getService(ConfigService.class).get("sql-driver"),
+            connectionSource = ConnectionSourceUtil.connectSQL(
                     ServiceManager.getService(ConfigService.class).get("sql-host"),
                     ServiceManager.getService(ConfigService.class).get("sql-database"),
                     ServiceManager.getService(ConfigService.class).get("sql-user"),
@@ -78,7 +77,7 @@ public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter
             return;
         }
 
-        connectionSource = ConnectionSourceUtil.connectNoSQLDatabase("sqlite",
+        connectionSource = ConnectionSourceUtil.connectNoSQLDatabase(
                 databaseFilePath.toString(), VanishUser.class);
     }
 }

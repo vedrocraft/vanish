@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import ru.sema1ary.vanish.Vanish;
 import ru.sema1ary.vanish.model.VanishUser;
 import ru.sema1ary.vanish.service.VanishUserService;
-import ru.vidoskim.bukkit.service.ConfigService;
+import ru.sema1ary.vedrocraftapi.service.ConfigService;
 
 @RequiredArgsConstructor
 public class JoinListener implements Listener {
