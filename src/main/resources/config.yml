@@ -1,5 +1,4 @@
 configuration:
-  sql-driver: 'mariadb' # MariaDB, MySQL, PostgreSQL
   sql-use: false
   sql-host: 'localhost:3306'
   sql-database: 'database'
