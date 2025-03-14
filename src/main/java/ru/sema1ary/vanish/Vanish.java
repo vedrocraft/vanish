@@ -1,6 +1,5 @@
 package ru.sema1ary.vanish;
 
-import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,11 +10,10 @@ import ru.sema1ary.vanish.model.VanishUser;
 import ru.sema1ary.vanish.service.VanishUserService;
 import ru.sema1ary.vanish.service.impl.VanishUserServiceImpl;
 
+import ru.sema1ary.vedrocraftapi.BaseCommons;
 import ru.sema1ary.vedrocraftapi.command.LiteCommandBuilder;
 import ru.sema1ary.vedrocraftapi.ormlite.ConnectionSourceUtil;
-import ru.sema1ary.vedrocraftapi.ormlite.DaoFinder;
 import ru.sema1ary.vedrocraftapi.service.ConfigService;
-import ru.sema1ary.vedrocraftapi.service.ServiceGetter;
 import ru.sema1ary.vedrocraftapi.service.ServiceManager;
 import ru.sema1ary.vedrocraftapi.service.impl.ConfigServiceImpl;
 
@@ -23,8 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter {
-    private JdbcPooledConnectionSource connectionSource;
+public final class Vanish extends JavaPlugin implements BaseCommons {
     private boolean isJoinerEnabled = false;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
@@ -40,8 +37,8 @@ public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter
             isJoinerEnabled = true;
         }
 
-        ServiceManager.registerService(VanishUserService.class, new VanishUserServiceImpl(this, isJoinerEnabled, getDao(connectionSource,
-                VanishUser.class)));
+        ServiceManager.registerService(VanishUserService.class, new VanishUserServiceImpl(this, isJoinerEnabled,
+                getDao(VanishUser.class)));
 
         getServer().getPluginManager().registerEvents(new PreJoinListener(ServiceManager.getService(
                 VanishUserService.class)), this);
@@ -57,13 +54,13 @@ public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter
 
     @Override
     public void onDisable() {
-        ConnectionSourceUtil.closeConnection(true, connectionSource);
+        ConnectionSourceUtil.closeConnection(true);
     }
 
     @SneakyThrows
     private void initConnectionSource() {
         if(ServiceManager.getService(ConfigService.class).get("sql-use")) {
-            connectionSource = ConnectionSourceUtil.connectSQL(
+            ConnectionSourceUtil.connectSQL(
                     ServiceManager.getService(ConfigService.class).get("sql-host"),
                     ServiceManager.getService(ConfigService.class).get("sql-database"),
                     ServiceManager.getService(ConfigService.class).get("sql-user"),
@@ -77,7 +74,7 @@ public final class Vanish extends JavaPlugin implements DaoFinder, ServiceGetter
             return;
         }
 
-        connectionSource = ConnectionSourceUtil.connectNoSQLDatabase(
+        ConnectionSourceUtil.connectNoSQLDatabase(
                 databaseFilePath.toString(), VanishUser.class);
     }
 }
