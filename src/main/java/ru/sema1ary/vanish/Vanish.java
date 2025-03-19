@@ -1,6 +1,5 @@
 package ru.sema1ary.vanish;
 
-import lombok.SneakyThrows;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.sema1ary.vanish.command.VanishCommand;
@@ -13,13 +12,10 @@ import ru.sema1ary.vanish.service.impl.VanishUserServiceImpl;
 import ru.sema1ary.vedrocraftapi.BaseCommons;
 import ru.sema1ary.vedrocraftapi.command.LiteCommandBuilder;
 import ru.sema1ary.vedrocraftapi.ormlite.ConnectionSourceUtil;
+import ru.sema1ary.vedrocraftapi.ormlite.DatabaseUtil;
 import ru.sema1ary.vedrocraftapi.service.ConfigService;
 import ru.sema1ary.vedrocraftapi.service.ServiceManager;
 import ru.sema1ary.vedrocraftapi.service.impl.ConfigServiceImpl;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public final class Vanish extends JavaPlugin implements BaseCommons {
     private boolean isJoinerEnabled = false;
@@ -27,54 +23,46 @@ public final class Vanish extends JavaPlugin implements BaseCommons {
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-
         ServiceManager.registerService(ConfigService.class, new ConfigServiceImpl(this));
 
-        initConnectionSource();
+        DatabaseUtil.initConnectionSource(
+                this,
+                getService(ConfigService.class),
+                VanishUser.class
+        );
 
         if(getServer().getPluginManager().isPluginEnabled("joiner")) {
             isJoinerEnabled = true;
         }
 
-        ServiceManager.registerService(VanishUserService.class, new VanishUserServiceImpl(this, isJoinerEnabled,
-                getDao(VanishUser.class)));
+        ServiceManager.registerService(VanishUserService.class, new VanishUserServiceImpl(
+                this,
+                isJoinerEnabled,
+                getDao(VanishUser.class)
+        ));
 
-        getServer().getPluginManager().registerEvents(new PreJoinListener(ServiceManager.getService(
-                VanishUserService.class)), this);
-        getServer().getPluginManager().registerEvents(new JoinListener(this, miniMessage,
-                ServiceManager.getService(ConfigService.class),
-                ServiceManager.getService(VanishUserService.class)), this);
+        getServer().getPluginManager().registerEvents(new PreJoinListener(
+                getService(VanishUserService.class)
+        ), this);
+
+        getServer().getPluginManager().registerEvents(new JoinListener(
+                this,
+                miniMessage,
+                getService(ConfigService.class),
+                getService(VanishUserService.class)
+        ), this);
 
         LiteCommandBuilder.builder()
-                .commands(new VanishCommand(miniMessage, ServiceManager.getService(ConfigService.class),
-                        ServiceManager.getService(VanishUserService.class)))
+                .commands(new VanishCommand(
+                        miniMessage,
+                        getService(ConfigService.class),
+                        getService(VanishUserService.class)
+                ))
                 .build();
     }
 
     @Override
     public void onDisable() {
         ConnectionSourceUtil.closeConnection(true);
-    }
-
-    @SneakyThrows
-    private void initConnectionSource() {
-        if(ServiceManager.getService(ConfigService.class).get("sql-use")) {
-            ConnectionSourceUtil.connectSQL(
-                    ServiceManager.getService(ConfigService.class).get("sql-host"),
-                    ServiceManager.getService(ConfigService.class).get("sql-database"),
-                    ServiceManager.getService(ConfigService.class).get("sql-user"),
-                    ServiceManager.getService(ConfigService.class).get("sql-password"),
-                    VanishUser.class);
-            return;
-        }
-
-        Path databaseFilePath = Paths.get("plugins/vanish/database.sqlite");
-        if(!Files.exists(databaseFilePath) && !databaseFilePath.toFile().createNewFile()) {
-            return;
-        }
-
-        ConnectionSourceUtil.connectNoSQLDatabase(
-                databaseFilePath.toString(), VanishUser.class);
     }
 }

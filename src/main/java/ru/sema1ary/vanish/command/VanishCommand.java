@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.sema1ary.vanish.model.VanishUser;
 import ru.sema1ary.vanish.service.VanishUserService;
+import ru.sema1ary.vedrocraftapi.player.PlayerUtil;
 import ru.sema1ary.vedrocraftapi.service.ConfigService;
 
 @RequiredArgsConstructor
@@ -26,7 +27,8 @@ public class VanishCommand {
     @Permission("vanish.reload")
     void reload(@Context CommandSender sender) {
         configService.reload();
-        sender.sendMessage(miniMessage.deserialize(configService.get("reload-message")));
+
+        PlayerUtil.sendMessage(sender, (String) configService.get("reload-message"));
     }
 
     @Execute
@@ -36,11 +38,11 @@ public class VanishCommand {
 
         if(user.isVanishActive()) {
             user.setVanishActive(false);
-            sender.sendMessage(miniMessage.deserialize(configService.get("vanish-disabled-message")));
+            PlayerUtil.sendMessage(sender, (String) configService.get("vanish-disabled-message"));
             userService.showPlayer(sender);
         } else {
             user.setVanishActive(true);
-            sender.sendMessage(miniMessage.deserialize(configService.get("vanish-enabled-message")));
+            PlayerUtil.sendMessage(sender, (String) configService.get("vanish-enabled-message"));
             userService.hidePlayer(sender);
         }
 
@@ -54,17 +56,17 @@ public class VanishCommand {
 
         if(user.isVanishActive()) {
             user.setVanishActive(false);
-            sender.sendMessage(miniMessage.deserialize(
+            PlayerUtil.sendMessage(sender,
                     ((String) configService.get("vanish-target-disabled-message"))
                             .replace("{player}", target.getName())
-            ));
+            );
             userService.showPlayer(target);
         } else {
             user.setVanishActive(true);
-            sender.sendMessage(miniMessage.deserialize(
+            PlayerUtil.sendMessage(sender,
                     ((String) configService.get("vanish-target-enabled-message"))
                             .replace("{player}", target.getName())
-            ));
+            );
             userService.hidePlayer(target);
         }
 
