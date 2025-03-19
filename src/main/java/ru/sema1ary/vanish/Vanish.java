@@ -19,7 +19,6 @@ import ru.sema1ary.vedrocraftapi.service.impl.ConfigServiceImpl;
 
 public final class Vanish extends JavaPlugin implements BaseCommons {
     private boolean isJoinerEnabled = false;
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @Override
     public void onEnable() {
@@ -47,14 +46,12 @@ public final class Vanish extends JavaPlugin implements BaseCommons {
 
         getServer().getPluginManager().registerEvents(new JoinListener(
                 this,
-                miniMessage,
                 getService(ConfigService.class),
                 getService(VanishUserService.class)
         ), this);
 
         LiteCommandBuilder.builder()
                 .commands(new VanishCommand(
-                        miniMessage,
                         getService(ConfigService.class),
                         getService(VanishUserService.class)
                 ))

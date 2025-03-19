@@ -18,7 +18,6 @@ import ru.sema1ary.vedrocraftapi.service.ConfigService;
 @RequiredArgsConstructor
 @Command(name = "vanish", aliases = {"v"})
 public class VanishCommand {
-    private final MiniMessage miniMessage;
     private final ConfigService configService;
     private final VanishUserService userService;
 

@@ -10,12 +10,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import ru.sema1ary.vanish.Vanish;
 import ru.sema1ary.vanish.model.VanishUser;
 import ru.sema1ary.vanish.service.VanishUserService;
+import ru.sema1ary.vedrocraftapi.player.PlayerUtil;
 import ru.sema1ary.vedrocraftapi.service.ConfigService;
 
 @RequiredArgsConstructor
 public class JoinListener implements Listener {
     private final Vanish plugin;
-    private final MiniMessage miniMessage;
     private final ConfigService configService;
     private final VanishUserService userService;
 
@@ -31,7 +31,7 @@ public class JoinListener implements Listener {
 
         event.joinMessage(null);
 
-        player.sendMessage(miniMessage.deserialize(configService.get("join-message")));
+        PlayerUtil.sendMessage(player, (String) configService.get("join-message"));
         userService.hidePlayer(player);
 
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
