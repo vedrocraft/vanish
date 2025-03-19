@@ -1,6 +1,5 @@
 package ru.sema1ary.vanish;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.sema1ary.vanish.command.VanishCommand;
 import ru.sema1ary.vanish.listener.JoinListener;

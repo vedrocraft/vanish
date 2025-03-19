@@ -1,7 +1,6 @@
 package ru.sema1ary.vanish.listener;
 
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
